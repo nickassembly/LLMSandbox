@@ -31,9 +31,9 @@ var chatService = new RequestCompletions(openAiKey);
 // await chatService.SingleRequestCompletion();
 
 // streaming request -- use in most cases unless the request is very simple and not real time chat
-await chatService.StreamingRequestCompletion();
+// await chatService.StreamingRequestCompletion();
 
-
-// Function call 
+// function calling
+// await chatService.FunctionCallingRequest();
 
 
