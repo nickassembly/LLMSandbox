@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using LLMSandbox;
+using Microsoft.Extensions.Configuration;
 using OpenAI;
 using OpenAI.Chat;
 using System.ClientModel;
@@ -17,25 +18,22 @@ var vaultUri = configuration["AzureKeyVault:VaultUri"] ?? "";
 
 // uses service to call factory method to create creds with a device code fallback
 // typically for web apps DefaultAzureCredential is sufficient but the aim here is to not rely on web infrastrctural patterns
-// since this is a console app
 var keyVault = new KeyVaultService(vaultUri);
 
 // get open ai key and set as environment variable for consistency;
-var openAiKey = await keyVault.GetSecretAsync("ApiKeys--OpenAI");
+var openAiKey = await keyVault.GetSecretAsync("ApiKeys--OpenAI") ?? string.Empty;
+Environment.SetEnvironmentVariable("OPENAI_API_KEY", openAiKey, EnvironmentVariableTarget.Process);
 
-// set environment variable for call consistency
-// TODO*** - env should get populated in SelfHostedLLM in order to set up client 
-Environment.SetEnvironmentVariable("OPENAI_API_KEY", openAiKey);
+// chat response service
+var chatService = new RequestCompletions(openAiKey);
 
-// Test AI Prompts for Open AI SDK
-ChatClient client = new(model: "gpt-4o", apiKey: openAiKey);
-ChatCompletion completion = client.CompleteChat("Say 'this is a test.'");
-Console.WriteLine($"[ASSISTANT]: {completion.Content[0].Text}");
+// simple request
+// await chatService.SingleRequestCompletion();
 
+// streaming request -- use in most cases unless the request is very simple and not real time chat
+await chatService.StreamingRequestCompletion();
 
-
-// Chat completion call
 
 // Function call 
 
-// Streaming response
+
