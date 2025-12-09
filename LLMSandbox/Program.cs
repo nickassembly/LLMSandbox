@@ -7,11 +7,6 @@ using System.ClientModel;
 // using open ai 2.7.0 sdk
 // https://github.com/openai/openai-dotnet?tab=readme-ov-file
 
-// Chat completion calls
-// Function calls
-// Embedding requests
-// Streaming responses
-
 var configuration = new ConfigurationBuilder()
     .SetBasePath(AppContext.BaseDirectory)
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -37,7 +32,10 @@ ChatClient client = new(model: "gpt-4o", apiKey: openAiKey);
 ChatCompletion completion = client.CompleteChat("Say 'this is a test.'");
 Console.WriteLine($"[ASSISTANT]: {completion.Content[0].Text}");
 
-// ChatMessage[] -- param for CompleteChat
 
 
+// Chat completion call
 
+// Function call 
+
+// Streaming response
