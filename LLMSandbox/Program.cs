@@ -27,6 +27,12 @@ Environment.SetEnvironmentVariable("OPENAI_API_KEY", openAiKey, EnvironmentVaria
 // chat response service
 var chatService = new RequestCompletions(openAiKey);
 
+// self hosted services
+// var selfHostedLLMService = new SelfHostedLLM(openAiKey, "model placeholder");
+
+// embeddings service (SDK has separate model for embeddings use)
+var embeddingService = new Embeddings(openAiKey);
+
 // simple request
 // await chatService.SingleRequestCompletion();
 
@@ -34,6 +40,7 @@ var chatService = new RequestCompletions(openAiKey);
 // await chatService.StreamingRequestCompletion();
 
 // function calling
-// await chatService.FunctionCallingRequest();
+   await chatService.FunctionCallingRequest();
 
-
+// embeddings example (Output is large vectors of floats)
+// await embeddingService.CreateMultipleEmbeddings();

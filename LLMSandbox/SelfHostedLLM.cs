@@ -9,22 +9,35 @@ namespace LLMSandbox
 {
     public class SelfHostedLLM
     {
-    // handle custom calls for self-hosted LLMs that are compatible with OpenAI API 
-        public ChatClient CreateSelfHostedClient(string modelName, string selfHostedEndpoint)
+        // handle custom calls for self-hosted LLMs that are compatible with OpenAI API 
+        private readonly ChatClient _client;
+        public SelfHostedLLM(string apiKey, string modelName)
         {
-            var openAiApiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY") ?? string.Empty;
-
-            ChatClient offlineClient = new(
+            _client = new ChatClient(
                 model: modelName,
-                credential: new ApiKeyCredential(openAiApiKey),
+                credential: new ApiKeyCredential(apiKey),
                 options: new OpenAIClientOptions()
                 {
                     Endpoint = new Uri("BASE_URL")
                 }
             );
-
-            return offlineClient;
         }
+
+        private readonly ChatMessage[] localMessagePrompts =
+        {
+            "what is my name",
+            "what are some of my hobbies",
+            "who are my siblings and parents"
+        };
+
+        public async Task SelfHostedLLMCompletion()
+        {
+            ChatCompletion completion = await _client.CompleteChatAsync(localMessagePrompts[0]);
+
+            Console.WriteLine($"[Self-Hosted Assistant]: {completion.Content[0].Text}");
+        }
+
+
 
     }
 }
