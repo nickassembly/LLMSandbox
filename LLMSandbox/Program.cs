@@ -28,19 +28,20 @@ Environment.SetEnvironmentVariable("OPENAI_API_KEY", openAiKey, EnvironmentVaria
 var chatService = new RequestCompletions(openAiKey);
 
 // self hosted services
-// var selfHostedLLMService = new SelfHostedLLM(openAiKey, "model placeholder");
+var selfHostedLLMService = new SelfHostedLLM("dolphin-llama3");
 
 // embeddings service (SDK has separate model for embeddings use)
-var embeddingService = new Embeddings(openAiKey);
+//var embeddingService = new Embeddings(openAiKey);
 
 // simple request
 // await chatService.SingleRequestCompletion();
 
 // streaming request -- use in most cases unless the request is very simple and not real time chat
 // await chatService.StreamingRequestCompletion();
+// await selfHostedLLMService.SelfHostedLLMCompletion();
 
 // function calling
-   await chatService.FunctionCallingRequest();
+ await chatService.FunctionCallingRequest();
 
 // embeddings example (Output is large vectors of floats)
 // await embeddingService.CreateMultipleEmbeddings();

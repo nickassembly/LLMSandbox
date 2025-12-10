@@ -3,41 +3,50 @@ using OpenAI.Chat;
 using System;
 using System.ClientModel;
 using System.Collections.Generic;
+using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json;
 
 namespace LLMSandbox
 {
     public class SelfHostedLLM
     {
-        // handle custom calls for self-hosted LLMs that are compatible with OpenAI API 
-        private readonly ChatClient _client;
-        public SelfHostedLLM(string apiKey, string modelName)
+        private readonly HttpClient _httpClient;
+        private string _modelName;
+        public SelfHostedLLM(string modelName)
         {
-            _client = new ChatClient(
-                model: modelName,
-                credential: new ApiKeyCredential(apiKey),
-                options: new OpenAIClientOptions()
-                {
-                    Endpoint = new Uri("BASE_URL")
-                }
-            );
+            _httpClient = new HttpClient { BaseAddress = new Uri("http://localhost:11434") };
+            _modelName = modelName;
         }
-
-        private readonly ChatMessage[] localMessagePrompts =
-        {
-            "what is my name",
-            "what are some of my hobbies",
-            "who are my siblings and parents"
-        };
 
         public async Task SelfHostedLLMCompletion()
         {
-            ChatCompletion completion = await _client.CompleteChatAsync(localMessagePrompts[0]);
+            var request = new
+            {
+                model = _modelName,
+                messages = new[]
+                {
+                    new { role = "user", content = "say hello" }
+                }
+            };
 
-            Console.WriteLine($"[Self-Hosted Assistant]: {completion.Content[0].Text}");
+            var response = await _httpClient.PostAsJsonAsync("/api/chat", request);
+
+            using var stream = await response.Content.ReadAsStreamAsync();
+            using var reader = new StreamReader(stream);
+
+            Console.Write("[offline assistant]:");
+
+            string? line;
+            while ((line = await reader.ReadLineAsync()) != null)
+            {
+                var obj = JsonDocument.Parse(line);
+                if (obj.RootElement.TryGetProperty("message", out var message))
+                {
+                    Console.Write(message.GetProperty("content").GetString());
+                }
+            }
         }
-
-
 
     }
 }
