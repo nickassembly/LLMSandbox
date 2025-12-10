@@ -37,11 +37,11 @@ var selfHostedLLMService = new SelfHostedLLM("dolphin-llama3");
 // await chatService.SingleRequestCompletion();
 
 // streaming request -- use in most cases unless the request is very simple and not real time chat
-// await chatService.StreamingRequestCompletion();
+  await chatService.StreamingRequestCompletion();
 // await selfHostedLLMService.SelfHostedLLMCompletion();
 
 // function calling
- await chatService.FunctionCallingRequest();
+ // await chatService.FunctionCallingRequest();
 
 // embeddings example (Output is large vectors of floats)
 // await embeddingService.CreateMultipleEmbeddings();

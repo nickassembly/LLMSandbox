@@ -26,7 +26,7 @@ namespace LLMSandbox
                 model = _modelName,
                 messages = new[]
                 {
-                    new { role = "user", content = "say hello" }
+                    new { role = "user", content = "say hello this is a test" }
                 }
             };
 
